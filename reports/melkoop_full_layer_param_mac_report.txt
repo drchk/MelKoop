@@ -1,0 +1,416 @@
+S3GNet(
+  21.9 k, 93.697% Params, 40.06 MMac, 95.867% MACs, 
+  (conv1): Conv1d(76, 0.325% Params, 612.86 KMac, 1.467% MACs, 3, 4, kernel_size=(6,), stride=(2,), padding=(2,))
+  (bn1): StreamingNorm1d(
+    16, 0.068% Params, 64.51 KMac, 0.154% MACs, 
+    (bn): BatchNorm1d(8, 0.034% Params, 64.51 KMac, 0.154% MACs, 4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(8, 0.034% Params, 0.0 Mac, 0.000% MACs, 4, 4, eps=1e-05, affine=True)
+  )
+  (conv2): DynamicSubbandConv1d(
+    816, 3.492% Params, 3.0 MMac, 7.191% MACs, 
+    (conv_fine): Conv1d(208, 0.890% Params, 838.66 KMac, 2.007% MACs, 4, 16, kernel_size=(3,), stride=(2,), padding=(1,))
+    (conv_coarse): Conv1d(528, 2.259% Params, 2.13 MMac, 5.095% MACs, 4, 16, kernel_size=(8,), stride=(2,), padding=(3,))
+    (gate): Sequential(
+      80, 0.342% Params, 37.3 KMac, 0.089% MACs, 
+      (0): AdaptiveAvgPool1d(0, 0.000% Params, 32.26 KMac, 0.077% MACs, output_size=1)
+      (1): Conv1d(80, 0.342% Params, 5.04 KMac, 0.012% MACs, 4, 16, kernel_size=(1,), stride=(1,))
+      (2): Sigmoid(0, 0.000% Params, 0.0 Mac, 0.000% MACs, )
+    )
+  )
+  (bn2): StreamingNorm1d(
+    64, 0.274% Params, 129.02 KMac, 0.309% MACs, 
+    (bn): BatchNorm1d(32, 0.137% Params, 129.02 KMac, 0.309% MACs, 16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(32, 0.137% Params, 0.0 Mac, 0.000% MACs, 8, 16, eps=1e-05, affine=True)
+  )
+  (conv3): DynamicSubbandConv1d(
+    5.22 k, 22.318% Params, 9.52 MMac, 22.778% MACs, 
+    (conv_fine): Conv1d(1.57 k, 6.709% Params, 3.16 MMac, 7.565% MACs, 16, 32, kernel_size=(3,), stride=(2,), padding=(1,))
+    (conv_coarse): Conv1d(3.1 k, 13.281% Params, 6.26 MMac, 14.976% MACs, 16, 32, kernel_size=(6,), stride=(2,), padding=(2,))
+    (gate): Sequential(
+      544, 2.328% Params, 98.78 KMac, 0.236% MACs, 
+      (0): AdaptiveAvgPool1d(0, 0.000% Params, 64.51 KMac, 0.154% MACs, output_size=1)
+      (1): Conv1d(544, 2.328% Params, 34.27 KMac, 0.082% MACs, 16, 32, kernel_size=(1,), stride=(1,))
+      (2): Sigmoid(0, 0.000% Params, 0.0 Mac, 0.000% MACs, )
+    )
+  )
+  (bn3): StreamingNorm1d(
+    128, 0.548% Params, 129.02 KMac, 0.309% MACs, 
+    (bn): BatchNorm1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(64, 0.274% Params, 0.0 Mac, 0.000% MACs, 8, 32, eps=1e-05, affine=True)
+  )
+  (conv1x1): Conv1d(1.06 k, 4.518% Params, 2.13 MMac, 5.095% MACs, 32, 32, kernel_size=(1,), stride=(1,))
+  (elu): ELU(0, 0.000% Params, 258.05 KMac, 0.618% MACs, alpha=1.0)
+  (conv_down): Conv1d(528, 2.259% Params, 1.06 MMac, 2.548% MACs, 32, 16, kernel_size=(1,), stride=(1,))
+  (conv_up): Conv1d(544, 2.328% Params, 1.1 MMac, 2.625% MACs, 16, 32, kernel_size=(1,), stride=(1,))
+  (temporal): TDCNpp(
+    3.34 k, 14.291% Params, 2.94 MMac, 7.025% MACs, 
+    (pre): Conv1d(128, 0.548% Params, 258.05 KMac, 0.618% MACs, 16, 8, kernel_size=(1,), stride=(1,), bias=False)
+    (post): Conv1d(128, 0.548% Params, 258.05 KMac, 0.618% MACs, 8, 16, kernel_size=(1,), stride=(1,), bias=False)
+    (blocks): ModuleList(
+      (0): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (1): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(2,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (2): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(4,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (3): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(8,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (4): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(16,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (5): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(32,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+    )
+    (ln): LayerNorm(1.02 k, 4.381% Params, 32.26 KMac, 0.077% MACs, (32, 16), eps=1e-05, elementwise_affine=True)
+    (inter): ConvPE_v3(
+      1.28 k, 5.477% Params, 645.12 KMac, 1.544% MACs, 
+      (dw): ModuleList(
+        (0-2): 3 x CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 16, 16, kernel_size=(3,), stride=(1,), groups=16, bias=False)
+      )
+      (pw): Conv1d(256, 1.095% Params, 516.1 KMac, 1.235% MACs, 16, 16, kernel_size=(1,), stride=(1,), bias=False)
+      (ln): LayerNorm(1.02 k, 4.381% Params, 32.26 KMac, 0.077% MACs, (32, 16), eps=1e-05, elementwise_affine=True)
+      (act): ReLU(0, 0.000% Params, 96.77 KMac, 0.232% MACs, )
+    )
+  )
+  (s4_post): S4Layer(
+    272, 1.164% Params, 548.35 KMac, 1.312% MACs, 
+    (dw): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 16, 16, kernel_size=(3,), stride=(1,), groups=16, bias=False)
+    (pw): Linear(272, 1.164% Params, 548.35 KMac, 1.312% MACs, in_features=16, out_features=16, bias=True)
+  )
+  (graphfreq): GraphFreq(
+    280, 1.198% Params, 564.48 KMac, 1.351% MACs, 
+    (Wg1): Linear(136, 0.582% Params, 274.18 KMac, 0.656% MACs, in_features=16, out_features=8, bias=True)
+    (Wg2): Linear(144, 0.616% Params, 290.3 KMac, 0.695% MACs, in_features=8, out_features=16, bias=True)
+  )
+  (melkoop): MelKoopman(
+    2.11 k, 9.037% Params, 262.08 KMac, 0.627% MACs, 
+    (proj): Linear(0, 0.000% Params, 64.51 KMac, 0.154% MACs, in_features=32, out_features=32, bias=False)
+    (up): Linear(0, 0.000% Params, 64.51 KMac, 0.154% MACs, in_features=32, out_features=32, bias=False)
+    (lp_t): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 1, 1, kernel_size=(5,), stride=(1,))
+    (enc): Linear(1.06 k, 4.518% Params, 66.53 KMac, 0.159% MACs, in_features=32, out_features=32, bias=True)
+    (dec): Linear(1.06 k, 4.518% Params, 66.53 KMac, 0.159% MACs, in_features=32, out_features=32, bias=True)
+  )
+  (time_core): KoopmanHybrid(
+    1.07 k, 4.587% Params, 2.16 MMac, 5.172% MACs, 
+    (fir): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 16, 16, kernel_size=(3,), stride=(1,), groups=16, bias=False)
+    (pw): Linear(272, 1.164% Params, 548.35 KMac, 1.312% MACs, in_features=16, out_features=16, bias=True)
+    (enc): Linear(272, 1.164% Params, 548.35 KMac, 1.312% MACs, in_features=16, out_features=16, bias=True)
+    (dec): Linear(272, 1.164% Params, 548.35 KMac, 1.312% MACs, in_features=16, out_features=16, bias=True)
+    (B1): Linear(128, 0.548% Params, 258.05 KMac, 0.618% MACs, in_features=16, out_features=8, bias=False)
+    (B2): Linear(128, 0.548% Params, 258.05 KMac, 0.618% MACs, in_features=8, out_features=16, bias=False)
+  )
+  (deconv1): Sequential(
+    5.17 k, 22.113% Params, 10.45 MMac, 25.012% MACs, 
+    (0): Conv1d(2.08 k, 8.900% Params, 4.19 MMac, 10.036% MACs, 64, 32, kernel_size=(1,), stride=(1,))
+    (1): ConvTranspose1d(3.09 k, 13.213% Params, 6.26 MMac, 14.976% MACs, 32, 16, kernel_size=(6,), stride=(2,), padding=(2,))
+  )
+  (bn_d1): StreamingNorm1d(
+    64, 0.274% Params, 129.02 KMac, 0.309% MACs, 
+    (bn): BatchNorm1d(32, 0.137% Params, 129.02 KMac, 0.309% MACs, 16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(32, 0.137% Params, 0.0 Mac, 0.000% MACs, 8, 16, eps=1e-05, affine=True)
+  )
+  (deconv2): Sequential(
+    1.04 k, 4.467% Params, 4.23 MMac, 10.113% MACs, 
+    (0): Conv1d(528, 2.259% Params, 2.13 MMac, 5.095% MACs, 32, 16, kernel_size=(1,), stride=(1,))
+    (1): ConvTranspose1d(516, 2.208% Params, 2.1 MMac, 5.018% MACs, 16, 4, kernel_size=(8,), stride=(2,), padding=(3,))
+  )
+  (bn_d2): StreamingNorm1d(
+    16, 0.068% Params, 64.51 KMac, 0.154% MACs, 
+    (bn): BatchNorm1d(8, 0.034% Params, 64.51 KMac, 0.154% MACs, 4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(8, 0.034% Params, 0.0 Mac, 0.000% MACs, 4, 4, eps=1e-05, affine=True)
+  )
+  (deconv3): Sequential(
+    86, 0.368% Params, 709.76 KMac, 1.699% MACs, 
+    (0): Conv1d(36, 0.154% Params, 290.3 KMac, 0.695% MACs, 8, 4, kernel_size=(1,), stride=(1,))
+    (1): ConvTranspose1d(50, 0.214% Params, 419.45 KMac, 1.004% MACs, 4, 2, kernel_size=(6,), stride=(2,), padding=(2,), output_padding=(1,))
+  )
+  (levelnorm_mag): LevelNorm(0, 0.000% Params, 0.0 Mac, 0.000% MACs, )
+  (pl_head): PhaseLimitedMagHead(0, 0.000% Params, 0.0 Mac, 0.000% MACs, )
+)
+==============================================================================================================
+PTFLOPS SUMMARY
+==============================================================================================================
+Input shape without batch: (257, 63, 2)
+MACs: 41.78 MMACs
+MACs: 0.041784 GMACs
+ptflops parameter count: 23.37 K
+All parameters: 25.42 K
+Trainable parameters: 23.37 K
+
+Note: ptflops may count frozen parameters, while the manuscript usually reports trainable parameters.
+MACs are counted for recognized modules such as Conv1d, ConvTranspose1d, Linear, etc.
+Elementwise operations, STFT/iSTFT, and some custom tensor operations may not be fully counted.
+==============================================================================================================
+
+PTFLOPS PER-LAYER STATISTICS
+==============================================================================================================
+
+
+==============================================================================================================
+TRAINABLE PARAMETER REPORT
+==============================================================================================================
+Parameter name                                                              Shape                        Params
+--------------------------------------------------------------------------------------------------------------
+s4_post_logit                                                               ()                                1
+out_log_gain                                                                ()                                1
+conv1.weight                                                                (4, 3, 6)                        72
+conv1.bias                                                                  (4,)                              4
+bn1.bn.weight                                                               (4,)                              4
+bn1.bn.bias                                                                 (4,)                              4
+bn1.gn.weight                                                               (4,)                              4
+bn1.gn.bias                                                                 (4,)                              4
+conv2.conv_fine.weight                                                      (16, 4, 3)                      192
+conv2.conv_fine.bias                                                        (16,)                            16
+conv2.conv_coarse.weight                                                    (16, 4, 8)                      512
+conv2.conv_coarse.bias                                                      (16,)                            16
+conv2.gate.1.weight                                                         (16, 4, 1)                       64
+conv2.gate.1.bias                                                           (16,)                            16
+bn2.bn.weight                                                               (16,)                            16
+bn2.bn.bias                                                                 (16,)                            16
+bn2.gn.weight                                                               (16,)                            16
+bn2.gn.bias                                                                 (16,)                            16
+conv3.conv_fine.weight                                                      (32, 16, 3)                   1,536
+conv3.conv_fine.bias                                                        (32,)                            32
+conv3.conv_coarse.weight                                                    (32, 16, 6)                   3,072
+conv3.conv_coarse.bias                                                      (32,)                            32
+conv3.gate.1.weight                                                         (32, 16, 1)                     512
+conv3.gate.1.bias                                                           (32,)                            32
+bn3.bn.weight                                                               (32,)                            32
+bn3.bn.bias                                                                 (32,)                            32
+bn3.gn.weight                                                               (32,)                            32
+bn3.gn.bias                                                                 (32,)                            32
+conv1x1.weight                                                              (32, 32, 1)                   1,024
+conv1x1.bias                                                                (32,)                            32
+conv_down.weight                                                            (16, 32, 1)                     512
+conv_down.bias                                                              (16,)                            16
+conv_up.weight                                                              (32, 16, 1)                     512
+conv_up.bias                                                                (32,)                            32
+temporal.pre.weight                                                         (8, 16, 1)                      128
+temporal.post.weight                                                        (16, 8, 1)                      128
+temporal.blocks.0.0.weight                                                  (8, 8, 1)                        64
+temporal.blocks.0.1.weight                                                  (1,)                              1
+temporal.blocks.0.2.weight                                                  (8, 1, 3)                        24
+temporal.blocks.0.3.weight                                                  (1,)                              1
+temporal.blocks.0.4.weight                                                  (8, 8, 1)                        64
+temporal.blocks.1.0.weight                                                  (8, 8, 1)                        64
+temporal.blocks.1.1.weight                                                  (1,)                              1
+temporal.blocks.1.2.weight                                                  (8, 1, 3)                        24
+temporal.blocks.1.3.weight                                                  (1,)                              1
+temporal.blocks.1.4.weight                                                  (8, 8, 1)                        64
+temporal.blocks.2.0.weight                                                  (8, 8, 1)                        64
+temporal.blocks.2.1.weight                                                  (1,)                              1
+temporal.blocks.2.2.weight                                                  (8, 1, 3)                        24
+temporal.blocks.2.3.weight                                                  (1,)                              1
+temporal.blocks.2.4.weight                                                  (8, 8, 1)                        64
+temporal.blocks.3.0.weight                                                  (8, 8, 1)                        64
+temporal.blocks.3.1.weight                                                  (1,)                              1
+temporal.blocks.3.2.weight                                                  (8, 1, 3)                        24
+temporal.blocks.3.3.weight                                                  (1,)                              1
+temporal.blocks.3.4.weight                                                  (8, 8, 1)                        64
+temporal.blocks.4.0.weight                                                  (8, 8, 1)                        64
+temporal.blocks.4.1.weight                                                  (1,)                              1
+temporal.blocks.4.2.weight                                                  (8, 1, 3)                        24
+temporal.blocks.4.3.weight                                                  (1,)                              1
+temporal.blocks.4.4.weight                                                  (8, 8, 1)                        64
+temporal.blocks.5.0.weight                                                  (8, 8, 1)                        64
+temporal.blocks.5.1.weight                                                  (1,)                              1
+temporal.blocks.5.2.weight                                                  (8, 1, 3)                        24
+temporal.blocks.5.3.weight                                                  (1,)                              1
+temporal.blocks.5.4.weight                                                  (8, 8, 1)                        64
+temporal.ln.weight                                                          (32, 16)                        512
+temporal.ln.bias                                                            (32, 16)                        512
+temporal.inter.dw.0.weight                                                  (16, 1, 3)                       48
+temporal.inter.dw.1.weight                                                  (16, 1, 3)                       48
+temporal.inter.dw.2.weight                                                  (16, 1, 3)                       48
+temporal.inter.pw.weight                                                    (16, 16, 1)                     256
+temporal.inter.ln.weight                                                    (32, 16)                        512
+temporal.inter.ln.bias                                                      (32, 16)                        512
+s4_post.dw.weight                                                           (16, 1, 3)                       48
+s4_post.pw.weight                                                           (16, 16)                        256
+s4_post.pw.bias                                                             (16,)                            16
+graphfreq.A                                                                 (32, 32)                      1,024
+graphfreq.logit_alpha                                                       ()                                1
+graphfreq.Wg1.weight                                                        (8, 16)                         128
+graphfreq.Wg1.bias                                                          (8,)                              8
+graphfreq.Wg2.weight                                                        (16, 8)                         128
+graphfreq.Wg2.bias                                                          (16,)                            16
+melkoop.logit_r                                                             (16,)                            16
+melkoop.theta                                                               (16,)                            16
+melkoop.alpha                                                               ()                                1
+melkoop.lp_t.weight                                                         (1, 1, 5)                         5
+melkoop.lp_t.bias                                                           (1,)                              1
+melkoop.enc.weight                                                          (32, 32)                      1,024
+melkoop.enc.bias                                                            (32,)                            32
+melkoop.dec.weight                                                          (32, 32)                      1,024
+melkoop.dec.bias                                                            (32,)                            32
+time_core.logit_r                                                           (8,)                              8
+time_core.theta                                                             (8,)                              8
+time_core.B_skip                                                            ()                                1
+time_core.mix_w                                                             (1,)                              1
+time_core.mix_b                                                             ()                                1
+time_core.logit_w_floor                                                     ()                                1
+time_core.gw                                                                (1,)                              1
+time_core.gb                                                                ()                                1
+time_core.fir.weight                                                        (16, 1, 3)                       48
+time_core.pw.weight                                                         (16, 16)                        256
+time_core.pw.bias                                                           (16,)                            16
+time_core.enc.weight                                                        (16, 16)                        256
+time_core.enc.bias                                                          (16,)                            16
+time_core.dec.weight                                                        (16, 16)                        256
+time_core.dec.bias                                                          (16,)                            16
+time_core.B1.weight                                                         (8, 16)                         128
+time_core.B2.weight                                                         (16, 8)                         128
+deconv1.0.weight                                                            (32, 64, 1)                   2,048
+deconv1.0.bias                                                              (32,)                            32
+deconv1.1.weight                                                            (32, 16, 6)                   3,072
+deconv1.1.bias                                                              (16,)                            16
+bn_d1.bn.weight                                                             (16,)                            16
+bn_d1.bn.bias                                                               (16,)                            16
+bn_d1.gn.weight                                                             (16,)                            16
+bn_d1.gn.bias                                                               (16,)                            16
+deconv2.0.weight                                                            (16, 32, 1)                     512
+deconv2.0.bias                                                              (16,)                            16
+deconv2.1.weight                                                            (16, 4, 8)                      512
+deconv2.1.bias                                                              (4,)                              4
+bn_d2.bn.weight                                                             (4,)                              4
+bn_d2.bn.bias                                                               (4,)                              4
+bn_d2.gn.weight                                                             (4,)                              4
+bn_d2.gn.bias                                                               (4,)                              4
+deconv3.0.weight                                                            (4, 8, 1)                        32
+deconv3.0.bias                                                              (4,)                              4
+deconv3.1.weight                                                            (4, 2, 6)                        48
+deconv3.1.bias                                                              (2,)                              2
+levelnorm_mag.log_gain                                                      (1,)                              1
+--------------------------------------------------------------------------------------------------------------
+Total trainable parameters                                                                               23,371
+Total trainable parameters [K]                                                                            23.37
+Total trainable parameters [M]                                                                         0.023371
+==============================================================================================================
+
+==============================================================================================================
+MODULE-LEVEL DIRECT PARAMETER REPORT
+==============================================================================================================
+Module                                                       Type                           Direct trainable params
+--------------------------------------------------------------------------------------------------------------
+conv1                                                        Conv1d                                           76
+bn1.bn                                                       BatchNorm1d                                       8
+bn1.gn                                                       GroupNorm                                         8
+conv2.conv_fine                                              Conv1d                                          208
+conv2.conv_coarse                                            Conv1d                                          528
+conv2.gate.1                                                 Conv1d                                           80
+bn2.bn                                                       BatchNorm1d                                      32
+bn2.gn                                                       GroupNorm                                        32
+conv3.conv_fine                                              Conv1d                                        1,568
+conv3.conv_coarse                                            Conv1d                                        3,104
+conv3.gate.1                                                 Conv1d                                          544
+bn3.bn                                                       BatchNorm1d                                      64
+bn3.gn                                                       GroupNorm                                        64
+conv1x1                                                      Conv1d                                        1,056
+conv_down                                                    Conv1d                                          528
+conv_up                                                      Conv1d                                          544
+temporal.pre                                                 Conv1d                                          128
+temporal.post                                                Conv1d                                          128
+temporal.blocks.0.0                                          Conv1d                                           64
+temporal.blocks.0.1                                          PReLU                                             1
+temporal.blocks.0.2                                          CausalConv1d                                     24
+temporal.blocks.0.3                                          PReLU                                             1
+temporal.blocks.0.4                                          Conv1d                                           64
+temporal.blocks.1.0                                          Conv1d                                           64
+temporal.blocks.1.1                                          PReLU                                             1
+temporal.blocks.1.2                                          CausalConv1d                                     24
+temporal.blocks.1.3                                          PReLU                                             1
+temporal.blocks.1.4                                          Conv1d                                           64
+temporal.blocks.2.0                                          Conv1d                                           64
+temporal.blocks.2.1                                          PReLU                                             1
+temporal.blocks.2.2                                          CausalConv1d                                     24
+temporal.blocks.2.3                                          PReLU                                             1
+temporal.blocks.2.4                                          Conv1d                                           64
+temporal.blocks.3.0                                          Conv1d                                           64
+temporal.blocks.3.1                                          PReLU                                             1
+temporal.blocks.3.2                                          CausalConv1d                                     24
+temporal.blocks.3.3                                          PReLU                                             1
+temporal.blocks.3.4                                          Conv1d                                           64
+temporal.blocks.4.0                                          Conv1d                                           64
+temporal.blocks.4.1                                          PReLU                                             1
+temporal.blocks.4.2                                          CausalConv1d                                     24
+temporal.blocks.4.3                                          PReLU                                             1
+temporal.blocks.4.4                                          Conv1d                                           64
+temporal.blocks.5.0                                          Conv1d                                           64
+temporal.blocks.5.1                                          PReLU                                             1
+temporal.blocks.5.2                                          CausalConv1d                                     24
+temporal.blocks.5.3                                          PReLU                                             1
+temporal.blocks.5.4                                          Conv1d                                           64
+temporal.ln                                                  LayerNorm                                     1,024
+temporal.inter.dw.0                                          CausalConv1d                                     48
+temporal.inter.dw.1                                          CausalConv1d                                     48
+temporal.inter.dw.2                                          CausalConv1d                                     48
+temporal.inter.pw                                            Conv1d                                          256
+temporal.inter.ln                                            LayerNorm                                     1,024
+s4_post.dw                                                   CausalConv1d                                     48
+s4_post.pw                                                   Linear                                          272
+graphfreq                                                    GraphFreq                                     1,025
+graphfreq.Wg1                                                Linear                                          136
+graphfreq.Wg2                                                Linear                                          144
+melkoop                                                      MelKoopman                                       33
+melkoop.lp_t                                                 CausalConv1d                                      6
+melkoop.enc                                                  Linear                                        1,056
+melkoop.dec                                                  Linear                                        1,056
+time_core                                                    KoopmanHybrid                                    22
+time_core.fir                                                CausalConv1d                                     48
+time_core.pw                                                 Linear                                          272
+time_core.enc                                                Linear                                          272
+time_core.dec                                                Linear                                          272
+time_core.B1                                                 Linear                                          128
+time_core.B2                                                 Linear                                          128
+deconv1.0                                                    Conv1d                                        2,080
+deconv1.1                                                    ConvTranspose1d                               3,088
+bn_d1.bn                                                     BatchNorm1d                                      32
+bn_d1.gn                                                     GroupNorm                                        32
+deconv2.0                                                    Conv1d                                          528
+deconv2.1                                                    ConvTranspose1d                                 516
+bn_d2.bn                                                     BatchNorm1d                                       8
+bn_d2.gn                                                     GroupNorm                                         8
+deconv3.0                                                    Conv1d                                           36
+deconv3.1                                                    ConvTranspose1d                                  50
+levelnorm_mag                                                LevelNorm                                         1
+--------------------------------------------------------------------------------------------------------------
+Total direct trainable parameters                                                                         23,369
+==============================================================================================================
+
+Saved report to: melkoop_full_layer_param_mac_report.txt
+Final clean summary: 23.37 K trainable params, 41.78 MMACs

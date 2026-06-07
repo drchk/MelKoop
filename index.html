@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MelKoop: Ultra-Compact Causal Speech Enhancement</title>
+  <style>
+    :root { --fg:#1d2433; --muted:#5d687a; --line:#d9dee8; --bg:#f6f8fb; --card:#ffffff; --accent:#153e75; --soft:#eaf1ff; }
+    body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color:var(--fg); background:var(--bg); line-height:1.55; }
+    header { background:linear-gradient(135deg,#102a4c,#245a93); color:white; padding:56px 20px 44px; }
+    .wrap { max-width:1160px; margin:0 auto; padding:0 20px; }
+    h1 { margin:0 0 10px; font-size:2.3rem; line-height:1.15; }
+    h2 { margin-top:34px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+    .subtitle { max-width:900px; font-size:1.1rem; opacity:.95; }
+    .notice { background:#fff6d7; border:1px solid #f0d98b; padding:12px 14px; border-radius:10px; margin:18px 0; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin:20px 0; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin-top:12px; }
+    .metric { background:var(--soft); border-radius:12px; padding:14px; }
+    .metric b { display:block; font-size:1.6rem; color:var(--accent); }
+    .metric span { color:var(--muted); font-size:.92rem; }
+    table { border-collapse:collapse; width:100%; font-size:.93rem; }
+    th, td { border:1px solid var(--line); padding:8px 9px; text-align:left; white-space:nowrap; }
+    th { background:#edf2f9; }
+    tr.proposed { font-weight:700; background:#eaf1ff; }
+    .table-wrap { overflow-x:auto; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    pre { overflow:auto; background:#0d1117; color:#e6edf3; padding:16px; border-radius:12px; max-height:520px; }
+    .small { color:var(--muted); font-size:.92rem; }
+    a { color:#0b58a8; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>MelKoop</h1>
+      <div class="subtitle">Ultra-compact causal speech enhancement with GraphFreq message passing and a hybrid FIR--Koopman temporal core.</div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="notice"><b>Code release status.</b> The main training and inference code is not included at this stage. Code, model configurations, inference/evaluation scripts, and representative audio examples are planned for release after acceptance, subject to dataset and third-party licensing constraints.</div>
+
+    <section class="card">
+      <h2>Model summary</h2>
+      <p>MelKoop is a compact causal speech-enhancement front end operating in the complex STFT domain. It combines a lightweight subband encoder, GraphFreq message passing over compressed frequency bands, a hybrid FIR--Koopman temporal core, a small Mel-envelope correction branch, and a complex-mask decoder.</p>
+    </section>
+
+    <section class="card">
+      <h2>Complexity summary</h2>
+      <p>The model-complexity report was generated with <code>ptflops</code> using input shape <code>[1, 257, 63, 2]</code>, corresponding to approximately one second of 16 kHz audio with <code>NFFT=512</code> and hop length <code>256</code>.</p>
+      <div class="grid">
+        <div class="metric"><b>23,371</b><span>trainable parameters</span></div>
+        <div class="metric"><b>23.37 K</b><span>trainable parameters</span></div>
+        <div class="metric"><b>0.023371 M</b><span>trainable parameters</span></div>
+        <div class="metric"><b>41.78 MMAC/s</b><span>counted module-level MACs</span></div>
+        <div class="metric"><b>0.041784 GMAC/s</b><span>counted module-level MACs</span></div>
+        <div class="metric"><b>25.42 K</b><span>all parameters including frozen Mel projection matrices</span></div>
+      </div>
+      <p class="small">Counting note: MACs are counted for recognized PyTorch modules under the <code>ptflops</code> convention. STFT/iSTFT, some elementwise operations, custom tensor operations, and some graph/batched-matrix operations may not be fully counted.</p>
+    </section>
+
+    <section class="card">
+      <h2>Component-level size overview</h2>
+      <div class="table-wrap"><table><thead><tr><th>Component</th><th>Modules</th><th>Parameters</th><th>Counted MACs</th></tr></thead><tbody>
+      <tr><td>Encoder input conv + subband encoder</td><td>conv1, conv2, conv3, conv1x1</td><td>~7.25K</td><td>~15.26MMAC</td></tr>
+<tr><td>Temporal TDCN++ core</td><td>temporal</td><td>~3.34K</td><td>~2.94MMAC</td></tr>
+<tr><td>GraphFreq message passing</td><td>graphfreq</td><td>~1.30K trainable including adjacency/gate</td><td>~0.56MMAC counted</td></tr>
+<tr><td>Mel-envelope Koopman branch</td><td>melkoop</td><td>~2.11K trainable</td><td>~0.26MMAC counted</td></tr>
+<tr><td>FIR--Koopman hybrid time-core</td><td>time_core</td><td>~1.07K trainable</td><td>~2.16MMAC counted</td></tr>
+<tr><td>Post S4-like depthwise/pointwise block</td><td>s4_post</td><td>272 params + gate</td><td>~0.55MMAC counted</td></tr>
+<tr><td>Decoder</td><td>deconv1, deconv2, deconv3</td><td>~6.30K</td><td>~15.39MMAC</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="card">
+      <h2>VoiceBank+DEMAND comparison</h2>
+      <p>Published objective results on the standard VoiceBank+DEMAND test set. <code>--</code> denotes that the source does not report the value. This table is used for quality--efficiency positioning rather than as a fully controlled loss-matched comparison, because training data, objective functions, causality/look-ahead, and reporting conventions differ across papers.</p>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Year</th><th>Params [M]</th><th>MACs [G]</th><th>Causal</th><th>PESQ</th><th>CSIG</th><th>CBAK</th><th>COVL</th><th>STOI</th></tr></thead><tbody>
+      <tr><td>Noisy</td><td>--</td><td>--</td><td>--</td><td>--</td><td>1.97</td><td>3.34</td><td>2.44</td><td>2.63</td><td>0.921</td></tr>
+<tr><td>FullSubNet+</td><td>2021</td><td>8.67</td><td>30.06</td><td>Not specified</td><td>2.88</td><td>3.86</td><td>3.42</td><td>3.57</td><td>0.940</td></tr>
+<tr><td>MP-SENet</td><td>2023</td><td>2.05</td><td>--</td><td>Not specified</td><td>3.50</td><td>4.73</td><td>3.95</td><td>4.22</td><td>0.960</td></tr>
+<tr><td>Spiking-S4</td><td>2024</td><td>0.53</td><td>0.75</td><td>No</td><td>3.39</td><td>4.92</td><td>2.64</td><td>4.31</td><td>--</td></tr>
+<tr><td>SEMamba</td><td>2024</td><td>2.25</td><td>--</td><td>No</td><td>3.55</td><td>4.77</td><td>3.95</td><td>4.29</td><td>0.960</td></tr>
+<tr><td>Mamba-SEUNet</td><td>2025</td><td>6.28</td><td>9.085</td><td>No</td><td>3.59</td><td>4.80</td><td>4.02</td><td>4.32</td><td>0.960</td></tr>
+<tr><td>xLSTM-SENet</td><td>2025</td><td>2.20</td><td>--</td><td>No</td><td>3.48</td><td>4.74</td><td>3.93</td><td>4.22</td><td>0.960</td></tr>
+<tr><td>RNNoise</td><td>2018</td><td>0.06</td><td>0.04</td><td>Yes</td><td>2.33</td><td>3.40</td><td>2.51</td><td>2.84</td><td>0.922</td></tr>
+<tr><td>DCCRN</td><td>2020</td><td>3.70</td><td>14.36</td><td>Not specified</td><td>2.54</td><td>3.74</td><td>3.13</td><td>2.75</td><td>0.938</td></tr>
+<tr><td>FRCRN</td><td>2022</td><td>10.27</td><td>12.30</td><td>Yes</td><td>3.21</td><td>4.23</td><td>3.64</td><td>3.73</td><td>0.942</td></tr>
+<tr><td>DeepFilterNet2</td><td>2022</td><td>2.31</td><td>0.36</td><td>Yes</td><td>3.08</td><td>4.30</td><td>3.40</td><td>3.70</td><td>0.943</td></tr>
+<tr><td>Dual-S4D</td><td>2024</td><td>10.8</td><td>18.43</td><td>Not specified</td><td>2.55</td><td>3.94</td><td>3.00</td><td>3.23</td><td>0.934</td></tr>
+<tr><td>CCFNet+</td><td>2023</td><td>0.62</td><td>1.47</td><td>Yes</td><td>3.03</td><td>4.27</td><td>3.55</td><td>3.61</td><td>0.950</td></tr>
+<tr><td>FSPEN</td><td>2024</td><td>0.079</td><td>0.089</td><td>Yes</td><td>2.97</td><td>--</td><td>--</td><td>--</td><td>0.942</td></tr>
+<tr><td>CAGCRN</td><td>2025</td><td>0.07</td><td>0.06</td><td>Yes</td><td>2.86</td><td>--</td><td>--</td><td>--</td><td>0.939</td></tr>
+<tr><td>AFAGC-GinNet</td><td>2025</td><td>1.32</td><td>1.03</td><td>Yes</td><td>3.25</td><td>4.35</td><td>3.62</td><td>3.75</td><td>0.955</td></tr>
+<tr><td>LiSenNet</td><td>2025</td><td>0.037</td><td>0.06</td><td>Yes</td><td>3.07</td><td>--</td><td>--</td><td>--</td><td>0.939</td></tr>
+<tr class="proposed"><td>MelKoop</td><td>2026</td><td>0.023</td><td>0.041</td><td>Yes</td><td>3.56</td><td>4.17</td><td>3.22</td><td>3.80</td><td>0.936</td></tr>
+      </tbody></table></div>
+      <p class="small"><b>Note.</b> Causality/look-ahead labels are source-grounded: <code>Yes</code> or <code>No</code> is used only when the source makes this clear; otherwise the entry is marked <code>Not specified</code>. Metric precision follows the source-reported values for external baselines; MelKoop point estimates are rounded to the same display convention. Since confidence intervals and metric-aware training losses are not consistently reported for external baselines, small cross-paper score differences should not be read as formal significance claims. Component-level conclusions are based on the internal ablation and temporal-core comparison reported in the manuscript.</p>
+    </section>
+
+    <section class="card">
+      <h2>Full layer-by-layer report</h2>
+      <p><a href="reports/melkoop_full_layer_param_mac_report.txt">Open the full parameter/MAC report</a>.</p>
+      <details>
+        <summary>Preview first part of the report</summary>
+        <pre>S3GNet(
+  21.9 k, 93.697% Params, 40.06 MMac, 95.867% MACs, 
+  (conv1): Conv1d(76, 0.325% Params, 612.86 KMac, 1.467% MACs, 3, 4, kernel_size=(6,), stride=(2,), padding=(2,))
+  (bn1): StreamingNorm1d(
+    16, 0.068% Params, 64.51 KMac, 0.154% MACs, 
+    (bn): BatchNorm1d(8, 0.034% Params, 64.51 KMac, 0.154% MACs, 4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(8, 0.034% Params, 0.0 Mac, 0.000% MACs, 4, 4, eps=1e-05, affine=True)
+  )
+  (conv2): DynamicSubbandConv1d(
+    816, 3.492% Params, 3.0 MMac, 7.191% MACs, 
+    (conv_fine): Conv1d(208, 0.890% Params, 838.66 KMac, 2.007% MACs, 4, 16, kernel_size=(3,), stride=(2,), padding=(1,))
+    (conv_coarse): Conv1d(528, 2.259% Params, 2.13 MMac, 5.095% MACs, 4, 16, kernel_size=(8,), stride=(2,), padding=(3,))
+    (gate): Sequential(
+      80, 0.342% Params, 37.3 KMac, 0.089% MACs, 
+      (0): AdaptiveAvgPool1d(0, 0.000% Params, 32.26 KMac, 0.077% MACs, output_size=1)
+      (1): Conv1d(80, 0.342% Params, 5.04 KMac, 0.012% MACs, 4, 16, kernel_size=(1,), stride=(1,))
+      (2): Sigmoid(0, 0.000% Params, 0.0 Mac, 0.000% MACs, )
+    )
+  )
+  (bn2): StreamingNorm1d(
+    64, 0.274% Params, 129.02 KMac, 0.309% MACs, 
+    (bn): BatchNorm1d(32, 0.137% Params, 129.02 KMac, 0.309% MACs, 16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(32, 0.137% Params, 0.0 Mac, 0.000% MACs, 8, 16, eps=1e-05, affine=True)
+  )
+  (conv3): DynamicSubbandConv1d(
+    5.22 k, 22.318% Params, 9.52 MMac, 22.778% MACs, 
+    (conv_fine): Conv1d(1.57 k, 6.709% Params, 3.16 MMac, 7.565% MACs, 16, 32, kernel_size=(3,), stride=(2,), padding=(1,))
+    (conv_coarse): Conv1d(3.1 k, 13.281% Params, 6.26 MMac, 14.976% MACs, 16, 32, kernel_size=(6,), stride=(2,), padding=(2,))
+    (gate): Sequential(
+      544, 2.328% Params, 98.78 KMac, 0.236% MACs, 
+      (0): AdaptiveAvgPool1d(0, 0.000% Params, 64.51 KMac, 0.154% MACs, output_size=1)
+      (1): Conv1d(544, 2.328% Params, 34.27 KMac, 0.082% MACs, 16, 32, kernel_size=(1,), stride=(1,))
+      (2): Sigmoid(0, 0.000% Params, 0.0 Mac, 0.000% MACs, )
+    )
+  )
+  (bn3): StreamingNorm1d(
+    128, 0.548% Params, 129.02 KMac, 0.309% MACs, 
+    (bn): BatchNorm1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (gn): GroupNorm(64, 0.274% Params, 0.0 Mac, 0.000% MACs, 8, 32, eps=1e-05, affine=True)
+  )
+  (conv1x1): Conv1d(1.06 k, 4.518% Params, 2.13 MMac, 5.095% MACs, 32, 32, kernel_size=(1,), stride=(1,))
+  (elu): ELU(0, 0.000% Params, 258.05 KMac, 0.618% MACs, alpha=1.0)
+  (conv_down): Conv1d(528, 2.259% Params, 1.06 MMac, 2.548% MACs, 32, 16, kernel_size=(1,), stride=(1,))
+  (conv_up): Conv1d(544, 2.328% Params, 1.1 MMac, 2.625% MACs, 16, 32, kernel_size=(1,), stride=(1,))
+  (temporal): TDCNpp(
+    3.34 k, 14.291% Params, 2.94 MMac, 7.025% MACs, 
+    (pre): Conv1d(128, 0.548% Params, 258.05 KMac, 0.618% MACs, 16, 8, kernel_size=(1,), stride=(1,), bias=False)
+    (post): Conv1d(128, 0.548% Params, 258.05 KMac, 0.618% MACs, 8, 16, kernel_size=(1,), stride=(1,), bias=False)
+    (blocks): ModuleList(
+      (0): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (1): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(2,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (2): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(4,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (3): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(8,), groups=8, bias=False)
+        (3): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (4): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+      )
+      (4): Sequential(
+        130, 0.556% Params, 290.3 KMac, 0.695% MACs, 
+        (0): Conv1d(64, 0.274% Params, 129.02 KMac, 0.309% MACs, 8, 8, kernel_size=(1,), stride=(1,), bias=False)
+        (1): PReLU(1, 0.004% Params, 16.13 KMac, 0.039% MACs, num_parameters=1)
+        (2): CausalConv1d(0, 0.000% Params, 0.0 Mac, 0.000% MACs, 8, 8, kernel_size=(3,), stride=(1,), dilation=(16,), groups=8, bias=False)
+        (3): PReLU(</pre>
+      </details>
+    </section>
+  </main>
+</body>
+</html>
