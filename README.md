@@ -1,4 +1,4 @@
-# MelKoop: Ultra-Compact Causal Speech Enhancement
+# MelKoop: Real-Time Speech Enhancement via Parsimonious Koopman Embeddings
 
 This repository page summarizes the current MelKoop model used in the manuscript. The main training code is not released in this repository yet. This page is intended to provide transparent model-size, computational-cost, and benchmark-positioning information.
 

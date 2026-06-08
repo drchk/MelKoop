@@ -1,4 +1,4 @@
-S3GNet(
+MelKoop(
   21.9 k, 93.697% Params, 40.06 MMac, 95.867% MACs, 
   (conv1): Conv1d(76, 0.325% Params, 612.86 KMac, 1.467% MACs, 3, 4, kernel_size=(6,), stride=(2,), padding=(2,))
   (bn1): StreamingNorm1d(
