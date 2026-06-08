@@ -5,464 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MelKoop Audio Examples</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel-soft: #1f2937;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --line: rgba(255,255,255,0.12);
-      --accent: #60a5fa;
-      --accent2: #34d399;
-      --warning: #fbbf24;
-      --white: #ffffff;
-    }
-
+    :root { --bg:#0f172a; --panel:#111827; --panel2:#1f2937; --text:#e5e7eb; --muted:#9ca3af; --line:#374151; --accent:#38bdf8; --good:#34d399; --warn:#fbbf24; }
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(96,165,250,0.18), transparent 32rem),
-        radial-gradient(circle at top right, rgba(52,211,153,0.14), transparent 28rem),
-        var(--bg);
-      color: var(--text);
-      line-height: 1.55;
-    }
-
-    a { color: inherit; }
-
-    .wrap {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-
-    header {
-      padding: 56px 0 30px;
-    }
-
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 46px;
-    }
-
-    .brand {
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      font-size: 1.25rem;
-    }
-
-    .nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-
-    .nav a:hover { color: var(--white); }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.4fr 0.8fr;
-      gap: 28px;
-      align-items: end;
-    }
-
-    h1 {
-      font-size: clamp(2.3rem, 5vw, 4.6rem);
-      line-height: 0.98;
-      margin: 0 0 20px;
-      letter-spacing: -0.06em;
-    }
-
-    .lead {
-      font-size: 1.1rem;
-      color: var(--muted);
-      max-width: 760px;
-      margin: 0;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .pill {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-    }
-
-    .summary {
-      border: 1px solid var(--line);
-      background: rgba(17,24,39,0.78);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: 0 20px 70px rgba(0,0,0,0.22);
-    }
-
-    .summary h2 {
-      margin: 0 0 14px;
-      font-size: 1rem;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .metric {
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid var(--line);
-      padding: 12px 0;
-      gap: 16px;
-    }
-
-    .metric:first-of-type { border-top: none; }
-    .metric strong { font-size: 1.1rem; }
-    .metric span { color: var(--muted); }
-
-    main { padding: 24px 0 70px; }
-
-    .notice {
-      border: 1px solid rgba(251,191,36,0.35);
-      background: rgba(251,191,36,0.08);
-      border-radius: 18px;
-      padding: 16px 18px;
-      color: #fde68a;
-      margin-bottom: 26px;
-      font-size: 0.95rem;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin: 0 0 20px;
-    }
-
-    .toolbar h2 {
-      margin: 0;
-      font-size: 1.45rem;
-      letter-spacing: -0.03em;
-    }
-
-    .search {
-      width: min(360px, 100%);
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 12px 16px;
-      outline: none;
-    }
-
-    .grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(17,24,39,0.74);
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 16px 42px rgba(0,0,0,0.18);
-    }
-
-    .card-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: center;
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255,255,255,0.035);
-    }
-
-    .sample-name {
-      font-weight: 700;
-      overflow-wrap: anywhere;
-    }
-
-    .tag {
-      color: var(--muted);
-      font-size: 0.84rem;
-      white-space: nowrap;
-    }
-
-    .players {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      padding: 18px;
-    }
-
-    .player {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.045);
-      border-radius: 16px;
-      padding: 14px;
-      min-width: 0;
-    }
-
-    .label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-weight: 700;
-      font-size: 0.94rem;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-
-    .noisy { background: var(--warning); }
-    .enhanced { background: var(--accent2); }
-    .clean { background: var(--accent); }
-
-    audio {
-      width: 100%;
-      height: 38px;
-    }
-
-    .download {
-      color: var(--muted);
-      font-size: 0.83rem;
-      text-decoration: none;
-    }
-
-    .download:hover { color: var(--white); }
-
-    .empty, .error {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.055);
-      border-radius: 18px;
-      padding: 22px;
-      color: var(--muted);
-    }
-
-    footer {
-      padding: 34px 0 50px;
-      color: var(--muted);
-      border-top: 1px solid var(--line);
-      font-size: 0.92rem;
-    }
-
-    code {
-      color: #bfdbfe;
-      background: rgba(96,165,250,0.08);
-      padding: 2px 6px;
-      border-radius: 7px;
-    }
-
-    @media (max-width: 820px) {
-      .hero { grid-template-columns: 1fr; }
-      .players { grid-template-columns: 1fr; }
-      header { padding-top: 34px; }
-    }
+    body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:radial-gradient(circle at top left,rgba(56,189,248,.16),transparent 35%),radial-gradient(circle at top right,rgba(167,139,250,.14),transparent 34%),var(--bg); line-height:1.6; }
+    .wrap { max-width:1180px; margin:0 auto; padding:38px 20px 60px; }
+    .hero { padding:34px 28px; border:1px solid rgba(255,255,255,.08); border-radius:24px; background:rgba(17,24,39,.82); box-shadow:0 18px 60px rgba(0,0,0,.25); backdrop-filter:blur(12px); }
+    .badge { display:inline-block; padding:6px 11px; border:1px solid rgba(56,189,248,.35); border-radius:999px; color:#bae6fd; background:rgba(56,189,248,.10); font-size:13px; margin-bottom:14px; }
+    h1 { margin:0 0 10px; font-size:clamp(32px,5vw,56px); line-height:1.05; letter-spacing:-.04em; }
+    .lead { margin:0; max-width:860px; color:var(--muted); font-size:17px; }
+    .nav { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+    .nav a { color:var(--text); text-decoration:none; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.04); padding:9px 13px; border-radius:12px; font-size:14px; }
+    .nav a:hover { border-color:rgba(56,189,248,.55); }
+    .info { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:24px 0; }
+    .stat { background:rgba(17,24,39,.70); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:18px; }
+    .stat strong { display:block; color:white; font-size:23px; margin-bottom:4px; }
+    .stat span { color:var(--muted); font-size:14px; }
+    .section-title { display:flex; align-items:end; justify-content:space-between; gap:16px; margin:34px 0 14px; }
+    .section-title h2 { margin:0; font-size:26px; letter-spacing:-.02em; }
+    .section-title p { margin:0; color:var(--muted); font-size:14px; }
+    .status { margin:16px 0; color:var(--muted); background:rgba(17,24,39,.62); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px 16px; }
+    .grid { display:grid; gap:18px; }
+    .card { border:1px solid rgba(255,255,255,.08); background:rgba(17,24,39,.82); border-radius:20px; padding:18px; box-shadow:0 12px 30px rgba(0,0,0,.18); }
+    .card-head { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,.08); padding-bottom:12px; }
+    .card h3 { margin:0; font-size:18px; letter-spacing:-.01em; }
+    .tag { color:#dbeafe; background:rgba(59,130,246,.16); border:1px solid rgba(59,130,246,.28); padding:4px 9px; border-radius:999px; font-size:12px; white-space:nowrap; }
+    .players { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .player { background:rgba(31,41,55,.70); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:13px; }
+    .player-label { display:flex; align-items:center; gap:8px; font-weight:700; margin-bottom:9px; font-size:14px; }
+    .dot { width:9px; height:9px; border-radius:999px; display:inline-block; }
+    .dot.noisy { background:#f87171; } .dot.enh { background:var(--accent); } .dot.clean { background:var(--good); }
+    audio { width:100%; height:34px; }
+    .filename { margin-top:7px; color:var(--muted); font-size:12px; word-break:break-all; }
+    .note { margin-top:28px; color:var(--muted); border-top:1px solid rgba(255,255,255,.08); padding-top:16px; font-size:14px; }
+    code { color:#bae6fd; background:rgba(56,189,248,.10); padding:2px 5px; border-radius:6px; }
+    @media (max-width:820px) { .info,.players { grid-template-columns:1fr; } .card-head { align-items:flex-start; flex-direction:column; } }
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <nav class="nav">
-        <div class="brand">MelKoop</div>
-        <div>
-          <a href="index.html">Project page</a>
-          &nbsp;&nbsp;/&nbsp;&nbsp;
-          <a href="reports/melkoop_full_layer_param_mac_report.txt">Complexity report</a>
-        </div>
-      </nav>
-
-      <section class="hero">
-        <div>
-          <h1>Audio examples</h1>
-          <p class="lead">
-            Representative noisy, enhanced, and clean speech examples for MelKoop, an ultra-compact causal speech-enhancement front end. The page is intended for listening examples only; quantitative claims are reported in the paper and project tables.
-          </p>
-          <div class="pill-row">
-            <span class="pill">Causal enhancement</span>
-            <span class="pill">Complex-STFT masking</span>
-            <span class="pill">23.37K trainable parameters</span>
-            <span class="pill">41.78 MMAC/s</span>
-          </div>
-        </div>
-
-        <aside class="summary">
-          <h2>Listening comparison</h2>
-          <div class="metric"><span>Noisy</span><strong>Input mixture</strong></div>
-          <div class="metric"><span>Enhanced</span><strong>MelKoop output</strong></div>
-          <div class="metric"><span>Clean</span><strong>Reference speech</strong></div>
-        </aside>
-      </section>
-    </div>
-  </header>
-
-  <main>
-    <div class="wrap">
-      <div class="notice">
-        Audio files are loaded from <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>. For each example, use the same filename in all three folders.
-      </div>
-
-      <div class="toolbar">
-        <h2>Examples</h2>
-        <input id="search" class="search" type="search" placeholder="Search examples..." />
-      </div>
-
-      <div id="status" class="empty">Loading audio examples...</div>
-      <section id="examples" class="grid" aria-live="polite"></section>
-    </div>
+  <main class="wrap">
+    <section class="hero">
+      <div class="badge">Audio examples</div>
+      <h1>MelKoop Speech Enhancement</h1>
+      <p class="lead">Representative noisy, enhanced, and clean speech examples for MelKoop, an ultra-compact causal speech-enhancement front end with FIR--Koopman temporal modeling. The source code is not released during review; this page only provides model-summary information and listening examples.</p>
+      <div class="nav"><a href="index.html">Project page</a><a href="README.md">README</a><a href="reports/melkoop_full_layer_param_mac_report.txt">Parameter/MAC report</a></div>
+    </section>
+    <section class="info"><div class="stat"><strong>23.37K</strong><span>trainable parameters</span></div><div class="stat"><strong>41.78M</strong><span>ptflops-counted MAC/s</span></div><div class="stat"><strong>Causal</strong><span>complex-STFT enhancement</span></div></section>
+    <div class="section-title"><h2>Listening examples</h2><p>Noisy → Enhanced → Clean</p></div>
+    <div id="status" class="status">Loading audio examples from GitHub...</div>
+    <section id="examples" class="grid"></section>
+    <p class="note"><strong>Note.</strong> This page automatically pairs examples by normalizing filenames in <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>. It supports your current names such as <code>noisy_1</code>, <code>enh_1</code>, <code>Clean1</code>, and also <code>p257_403</code>, <code>enh_p257_403</code>, <code>p257_403</code>. Files without a matching noisy/enhanced/clean triplet are skipped.</p>
   </main>
-
-  <footer>
-    <div class="wrap">
-      Code, model configuration files, inference/evaluation scripts, and representative audio examples will be released publicly after acceptance, subject to dataset and third-party licensing constraints.
-    </div>
-  </footer>
-
   <script>
-    // ================================
-    // EDIT THESE TWO VALUES
-    // ================================
     const GITHUB_USER = "drchk";
     const GITHUB_REPO = "MelKoop";
     const BRANCH = "main";
-
-    // Folder names are case-sensitive on GitHub Pages.
-    const AUDIO_ROOT = "Audio";
-    const DIRS = {
-      noisy: `${AUDIO_ROOT}/Noisy`,
-      enhanced: `${AUDIO_ROOT}/Enhanced`,
-      clean: `${AUDIO_ROOT}/Clean`
-    };
-
-    const exts = new Set([".wav", ".mp3", ".flac", ".ogg", ".m4a"]);
-    const statusEl = document.getElementById("status");
-    const examplesEl = document.getElementById("examples");
-    const searchEl = document.getElementById("search");
-    let allExamples = [];
-
-    function extOf(name) {
-      const i = name.lastIndexOf(".");
-      return i >= 0 ? name.slice(i).toLowerCase() : "";
-    }
-
-    function prettyName(filename) {
-      return filename.replace(/\.[^/.]+$/, "").replace(/[_-]+/g, " ");
-    }
-
-    async function listGithubFolder(path) {
-      const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`;
-      const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error(`Could not read ${path}. Check GITHUB_USER, repository name, branch, and folder case.`);
-      }
-      const data = await res.json();
-      return data
-        .filter(item => item.type === "file" && exts.has(extOf(item.name)))
-        .map(item => ({ name: item.name, url: item.download_url }));
-    }
-
-    function mapByName(items) {
-      const m = new Map();
-      for (const item of items) m.set(item.name, item.url);
-      return m;
-    }
-
-    function render(examples) {
-      examplesEl.innerHTML = "";
-      if (!examples.length) {
-        statusEl.className = "empty";
-        statusEl.textContent = "No matching audio examples found.";
-        statusEl.style.display = "block";
-        return;
-      }
-      statusEl.style.display = "none";
-
-      for (const ex of examples) {
-        const card = document.createElement("article");
-        card.className = "card";
-        card.innerHTML = `
-          <div class="card-head">
-            <div class="sample-name">${prettyName(ex.name)}</div>
-            <div class="tag">${ex.name}</div>
-          </div>
-          <div class="players">
-            <div class="player">
-              <div class="label"><span><span class="dot noisy"></span>Noisy</span><a class="download" href="${ex.noisy}" download>download</a></div>
-              <audio controls preload="none" src="${ex.noisy}"></audio>
-            </div>
-            <div class="player">
-              <div class="label"><span><span class="dot enhanced"></span>Enhanced</span><a class="download" href="${ex.enhanced}" download>download</a></div>
-              <audio controls preload="none" src="${ex.enhanced}"></audio>
-            </div>
-            <div class="player">
-              <div class="label"><span><span class="dot clean"></span>Clean</span><a class="download" href="${ex.clean}" download>download</a></div>
-              <audio controls preload="none" src="${ex.clean}"></audio>
-            </div>
-          </div>
-        `;
-        examplesEl.appendChild(card);
-      }
-    }
-
-    async function loadExamples() {
-      if (GITHUB_USER === "YOUR_GITHUB_USERNAME") {
-        statusEl.className = "error";
-        statusEl.innerHTML = "Please edit <code>audio.html</code> and set <code>GITHUB_USER</code> to your GitHub username.";
-        return;
-      }
-
-      try {
-        const [noisy, enhanced, clean] = await Promise.all([
-          listGithubFolder(DIRS.noisy),
-          listGithubFolder(DIRS.enhanced),
-          listGithubFolder(DIRS.clean)
-        ]);
-
-        const noisyMap = mapByName(noisy);
-        const enhancedMap = mapByName(enhanced);
-        const cleanMap = mapByName(clean);
-
-        const shared = [...enhancedMap.keys()]
-          .filter(name => noisyMap.has(name) && cleanMap.has(name))
-          .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-
-        allExamples = shared.map(name => ({
-          name,
-          noisy: noisyMap.get(name),
-          enhanced: enhancedMap.get(name),
-          clean: cleanMap.get(name)
-        }));
-
-        render(allExamples);
-      } catch (err) {
-        statusEl.className = "error";
-        statusEl.innerHTML = `${err.message}<br><br>Expected structure: <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>, with matching filenames.`;
-      }
-    }
-
-    searchEl.addEventListener("input", () => {
-      const q = searchEl.value.toLowerCase().trim();
-      render(allExamples.filter(ex => ex.name.toLowerCase().includes(q)));
-    });
-
+    const folders = { noisy:"Audio/Noisy", enhanced:"Audio/Enhanced", clean:"Audio/Clean" };
+    function apiUrl(path){ return `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${encodeURIComponent(path).replaceAll("%2F","/")}?ref=${BRANCH}`; }
+    function pageUrl(path,name){ return `${path}/${encodeURIComponent(name)}`; }
+    function stripExt(name){ return name.replace(/\.[^/.]+$/, ""); }
+    function normalizeKey(name){ let base=stripExt(name).trim().toLowerCase(); base=base.replace(/^clean[\s_-]*/i,"").replace(/^enhanced[\s_-]*/i,"").replace(/^enh[\s_-]*/i,"").replace(/^noisy[\s_-]*/i,"").replace(/^noise[\s_-]*/i,""); return base.replace(/\s+/g,"_"); }
+    function exampleLabel(key){ return /^\d+$/.test(key) ? `Example ${String(Number(key)).padStart(2,"0")}` : `Example ${key}`; }
+    function naturalSort(a,b){ return a.localeCompare(b,undefined,{numeric:true,sensitivity:"base"}); }
+    async function listFiles(path){ const response=await fetch(apiUrl(path)); if(!response.ok){ throw new Error(`Could not load ${path}. GitHub API returned ${response.status}.`); } const files=await response.json(); return files.filter(f=>f.type==="file" && /\.(wav|mp3|flac|ogg|m4a)$/i.test(f.name)).map(f=>({name:f.name,key:normalizeKey(f.name),url:pageUrl(path,f.name)})); }
+    function indexByKey(files){ const m=new Map(); for(const f of files){ if(!m.has(f.key)) m.set(f.key,f); } return m; }
+    function makeCard(key,noisy,enhanced,clean){ const card=document.createElement("article"); card.className="card"; card.innerHTML=`<div class="card-head"><h3>${exampleLabel(key)}</h3><span class="tag">matched triplet</span></div><div class="players"><div class="player"><div class="player-label"><span class="dot noisy"></span>Noisy input</div><audio controls preload="none" src="${noisy.url}"></audio><div class="filename">${noisy.name}</div></div><div class="player"><div class="player-label"><span class="dot enh"></span>MelKoop enhanced</div><audio controls preload="none" src="${enhanced.url}"></audio><div class="filename">${enhanced.name}</div></div><div class="player"><div class="player-label"><span class="dot clean"></span>Clean reference</div><audio controls preload="none" src="${clean.url}"></audio><div class="filename">${clean.name}</div></div></div>`; return card; }
+    async function loadExamples(){ const status=document.getElementById("status"); const container=document.getElementById("examples"); try{ const [noisyFiles,enhancedFiles,cleanFiles]=await Promise.all([listFiles(folders.noisy),listFiles(folders.enhanced),listFiles(folders.clean)]); const noisyMap=indexByKey(noisyFiles), enhancedMap=indexByKey(enhancedFiles), cleanMap=indexByKey(cleanFiles); const keys=[...noisyMap.keys()].filter(k=>enhancedMap.has(k)&&cleanMap.has(k)).sort(naturalSort); const skipped=[...new Set([...noisyMap.keys(),...enhancedMap.keys(),...cleanMap.keys()])].filter(k=>!(noisyMap.has(k)&&enhancedMap.has(k)&&cleanMap.has(k))); if(keys.length===0){ status.innerHTML=`No matched triplets found. Check that the files are inside <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>.`; return; } status.innerHTML=`Loaded <strong>${keys.length}</strong> matched audio triplets.${skipped.length ? `<br><span style="color: var(--warn);">Skipped ${skipped.length} unmatched key(s): ${skipped.join(", ")}</span>` : ""}`; for(const key of keys){ container.appendChild(makeCard(key,noisyMap.get(key),enhancedMap.get(key),cleanMap.get(key))); } } catch(err){ status.innerHTML=`Could not load audio examples.<br><span style="color:#fca5a5">${err.message}</span><br>Check that GitHub Pages can access <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>.`; } }
     loadExamples();
   </script>
 </body>
