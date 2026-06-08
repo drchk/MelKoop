@@ -39,7 +39,7 @@
   <header>
     <div class="wrap">
       <h1>MelKoop</h1>
-      <div class="subtitle">Ultra-compact causal speech enhancement with GraphFreq message passing and a hybrid FIR--Koopman temporal core.</div>
+      <div class="subtitle">Real-time speech enhancement for legacy low-bitrate vocoder chains and low-power edge devices requires models that are ultra-compact, strictly causal, and stable under long-horizon streaming. Existing lightweight systems are usually optimized on short utterances, while their long-stream behavior and compatibility with downstream speech codecs are often left implicit. In this paper, we propose MelKoop, a causal complex-STFT speech enhancement architecture that combines compact subband processing with an input-driven Koopman temporal core. The core uses two-dimensional Koopman rotation--decay state pairs with explicit input injection, giving a low-cost recurrent memory in which the state carried from previous frames is forced to decay rather than grow. A short-memory FIR path responds to local transients, while a bounded Mel-envelope branch applies a small correction to slow spectral-envelope trajectories without replacing the STFT-domain enhancement path. The model is trained with a reconstruction-dominant objective, supplemented by low-weight perceptual, intelligibility, and stability regularizers. MelKoop is evaluated on VoiceBank+DEMAND, VB-DemandEx, DNS Challenge data over long-stream drift diagnostics and a representative legacy low-bitrate vocoder chain. The results show that MelKoop operates in the very low-parameter and low-MAC regime while retaining competitive objective quality and stable behavior during continuous streaming.</div>
       <div class="top-actions">
         <a class="btn primary" href="demos.html">Listen to audio demos</a>
         <a class="btn secondary" href="reports/melkoop_full_layer_param_mac_report.txt">Parameter/MAC report</a>
@@ -47,11 +47,11 @@
     </div>
   </header>
   <main class="wrap">
-    <div class="notice"><b>Code release status.</b> The main training and inference code is not included at this stage. Code, model configurations, inference/evaluation scripts, and representative audio examples are planned for release after acceptance, subject to dataset and third-party licensing constraints.</div>
+    <div class="notice"><b>Code release status.</b> The main source code is not included at this stage. </div>
 
     <section class="card">
       <h2>Audio demos</h2>
-      <p>Representative noisy, enhanced, and clean speech examples are available on a separate listening page. The browser player is configured to hide the download control, but the audio files are public web assets because this site is hosted as a static page.</p>
+      <p>Representative noisy, enhanced, and clean speech examples are available on a separate listening page. </p>
       <p><a class="btn primary" style="border:1px solid var(--line); background:var(--accent); color:white;" href="demos.html">Open audio demo page</a></p>
     </section>
 
