@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MelKoop Audio Examples</title>
+  <title>MelKoop Audio Demos</title>
   <style>
     :root { --bg:#0f172a; --panel:#111827; --panel2:#1f2937; --text:#e5e7eb; --muted:#9ca3af; --line:#374151; --accent:#38bdf8; --good:#34d399; --warn:#fbbf24; }
     * { box-sizing: border-box; }
@@ -41,16 +41,16 @@
     @media (max-width:820px) { .info,.players { grid-template-columns:1fr; } .card-head { align-items:flex-start; flex-direction:column; } }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false">
   <main class="wrap">
     <section class="hero">
-      <div class="badge">Audio examples</div>
+      <div class="badge">Audio demos</div>
       <h1>MelKoop Speech Enhancement</h1>
       <p class="lead">Representative noisy, enhanced, and clean speech examples for MelKoop, an ultra-compact causal speech-enhancement front end with FIR--Koopman temporal modeling. The source code is not released during review; this page only provides model-summary information and listening examples.</p>
       <div class="nav"><a href="index.html">Project page</a><a href="README.md">README</a><a href="reports/melkoop_full_layer_param_mac_report.txt">Parameter/MAC report</a></div>
     </section>
     <section class="info"><div class="stat"><strong>23.37K</strong><span>trainable parameters</span></div><div class="stat"><strong>41.78M</strong><span>ptflops-counted MAC/s</span></div><div class="stat"><strong>Causal</strong><span>complex-STFT enhancement</span></div></section>
-    <div class="section-title"><h2>Listening examples</h2><p>Noisy → Enhanced → Clean</p></div>
+    <div class="section-title"><h2>Listening demos</h2><p>Noisy → Enhanced → Clean</p></div>
     <div id="status" class="status">Loading audio examples from GitHub...</div>
     <section id="examples" class="grid"></section>
     <p class="note"><strong>Note.</strong> This page automatically pairs examples by normalizing filenames in <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>. It supports your current names such as <code>noisy_1</code>, <code>enh_1</code>, <code>Clean1</code>, and also <code>p257_403</code>, <code>enh_p257_403</code>, <code>p257_403</code>. Files without a matching noisy/enhanced/clean triplet are skipped.</p>
@@ -68,7 +68,7 @@
     function naturalSort(a,b){ return a.localeCompare(b,undefined,{numeric:true,sensitivity:"base"}); }
     async function listFiles(path){ const response=await fetch(apiUrl(path)); if(!response.ok){ throw new Error(`Could not load ${path}. GitHub API returned ${response.status}.`); } const files=await response.json(); return files.filter(f=>f.type==="file" && /\.(wav|mp3|flac|ogg|m4a)$/i.test(f.name)).map(f=>({name:f.name,key:normalizeKey(f.name),url:pageUrl(path,f.name)})); }
     function indexByKey(files){ const m=new Map(); for(const f of files){ if(!m.has(f.key)) m.set(f.key,f); } return m; }
-    function makeCard(key,noisy,enhanced,clean){ const card=document.createElement("article"); card.className="card"; card.innerHTML=`<div class="card-head"><h3>${exampleLabel(key)}</h3><span class="tag">matched triplet</span></div><div class="players"><div class="player"><div class="player-label"><span class="dot noisy"></span>Noisy input</div><audio controls preload="none" src="${noisy.url}"></audio><div class="filename">${noisy.name}</div></div><div class="player"><div class="player-label"><span class="dot enh"></span>MelKoop enhanced</div><audio controls preload="none" src="${enhanced.url}"></audio><div class="filename">${enhanced.name}</div></div><div class="player"><div class="player-label"><span class="dot clean"></span>Clean reference</div><audio controls preload="none" src="${clean.url}"></audio><div class="filename">${clean.name}</div></div></div>`; return card; }
+    function makeCard(key,noisy,enhanced,clean){ const card=document.createElement("article"); card.className="card"; card.innerHTML=`<div class="card-head"><h3>${exampleLabel(key)}</h3><span class="tag">matched triplet</span></div><div class="players"><div class="player"><div class="player-label"><span class="dot noisy"></span>Noisy input</div><audio controls controlsList="nodownload noplaybackrate" disablePictureInPicture oncontextmenu="return false" preload="none" src="${noisy.url}"></audio><div class="filename">${noisy.name}</div></div><div class="player"><div class="player-label"><span class="dot enh"></span>MelKoop enhanced</div><audio controls controlsList="nodownload noplaybackrate" disablePictureInPicture oncontextmenu="return false" preload="none" src="${enhanced.url}"></audio><div class="filename">${enhanced.name}</div></div><div class="player"><div class="player-label"><span class="dot clean"></span>Clean reference</div><audio controls controlsList="nodownload noplaybackrate" disablePictureInPicture oncontextmenu="return false" preload="none" src="${clean.url}"></audio><div class="filename">${clean.name}</div></div></div>`; return card; }
     async function loadExamples(){ const status=document.getElementById("status"); const container=document.getElementById("examples"); try{ const [noisyFiles,enhancedFiles,cleanFiles]=await Promise.all([listFiles(folders.noisy),listFiles(folders.enhanced),listFiles(folders.clean)]); const noisyMap=indexByKey(noisyFiles), enhancedMap=indexByKey(enhancedFiles), cleanMap=indexByKey(cleanFiles); const keys=[...noisyMap.keys()].filter(k=>enhancedMap.has(k)&&cleanMap.has(k)).sort(naturalSort); const skipped=[...new Set([...noisyMap.keys(),...enhancedMap.keys(),...cleanMap.keys()])].filter(k=>!(noisyMap.has(k)&&enhancedMap.has(k)&&cleanMap.has(k))); if(keys.length===0){ status.innerHTML=`No matched triplets found. Check that the files are inside <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>.`; return; } status.innerHTML=`Loaded <strong>${keys.length}</strong> matched audio triplets.${skipped.length ? `<br><span style="color: var(--warn);">Skipped ${skipped.length} unmatched key(s): ${skipped.join(", ")}</span>` : ""}`; for(const key of keys){ container.appendChild(makeCard(key,noisyMap.get(key),enhancedMap.get(key),cleanMap.get(key))); } } catch(err){ status.innerHTML=`Could not load audio examples.<br><span style="color:#fca5a5">${err.message}</span><br>Check that GitHub Pages can access <code>Audio/Noisy</code>, <code>Audio/Enhanced</code>, and <code>Audio/Clean</code>.`; } }
     loadExamples();
   </script>
