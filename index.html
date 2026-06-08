@@ -26,6 +26,12 @@
     code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
     pre { overflow:auto; background:#0d1117; color:#e6edf3; padding:16px; border-radius:12px; max-height:520px; }
     .small { color:var(--muted); font-size:.92rem; }
+
+    .top-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:22px; }
+    .btn { display:inline-block; padding:10px 14px; border-radius:10px; text-decoration:none; font-weight:650; border:1px solid rgba(255,255,255,.35); }
+    .btn.primary { background:#ffffff; color:#153e75; }
+    .btn.secondary { background:rgba(255,255,255,.12); color:#ffffff; }
+    .btn:hover { filter:brightness(.96); }
     a { color:#0b58a8; }
   </style>
 </head>
@@ -34,10 +40,20 @@
     <div class="wrap">
       <h1>MelKoop</h1>
       <div class="subtitle">Ultra-compact causal speech enhancement with GraphFreq message passing and a hybrid FIR--Koopman temporal core.</div>
+      <div class="top-actions">
+        <a class="btn primary" href="demos.html">Listen to audio demos</a>
+        <a class="btn secondary" href="reports/melkoop_full_layer_param_mac_report.txt">Parameter/MAC report</a>
+      </div>
     </div>
   </header>
   <main class="wrap">
     <div class="notice"><b>Code release status.</b> The main training and inference code is not included at this stage. Code, model configurations, inference/evaluation scripts, and representative audio examples are planned for release after acceptance, subject to dataset and third-party licensing constraints.</div>
+
+    <section class="card">
+      <h2>Audio demos</h2>
+      <p>Representative noisy, enhanced, and clean speech examples are available on a separate listening page. The browser player is configured to hide the download control, but the audio files are public web assets because this site is hosted as a static page.</p>
+      <p><a class="btn primary" style="border:1px solid var(--line); background:var(--accent); color:white;" href="demos.html">Open audio demo page</a></p>
+    </section>
 
     <section class="card">
       <h2>Model summary</h2>
